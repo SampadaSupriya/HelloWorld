@@ -3,14 +3,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
+                echo "=== Pulling code from GitHub repository (SampadaSupriya/HelloWorld) ==="
                 git branch: 'main', url: 'https://github.com/SampadaSupriya/HelloWorld.git'
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Compile') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
-                sh 'kubectl get pods'
+                echo "=== Compiling Java HelloWorld program ==="
+                sh 'javac HelloWorld.java'
+            }
+        }
+        stage('Run') {
+            steps {
+                echo "=== Executing Java HelloWorld program ==="
+                sh 'java HelloWorld'
             }
         }
     }
