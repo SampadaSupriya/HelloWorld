@@ -7,16 +7,16 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/SampadaSupriya/HelloWorld.git'
             }
         }
-        stage('Compile') {
+        stage('Build Docker Image') {
             steps {
-                echo "=== Compiling Java HelloWorld program ==="
-                sh 'javac HelloWorld.java'
+                echo "=== Building Docker image for HelloWorld app ==="
+                sh 'docker build -t hello-world-app .'
             }
         }
-        stage('Run') {
+        stage('Run Docker Container') {
             steps {
-                echo "=== Executing Java HelloWorld program ==="
-                sh 'java HelloWorld'
+                echo "=== Running Docker container locally ==="
+                sh 'docker run --rm hello-world-app'
             }
         }
     }
