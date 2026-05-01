@@ -23,7 +23,12 @@ pipeline {
                 }
             }
         }
-    }
+	stage('Docker Push') {
+		steps {
+		    sh 'docker push sampadasupriya/${env.DOCKER_IMAGE}'
+		}   
+	}
+ }
 
     post {
         success {
