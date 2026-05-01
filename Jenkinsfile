@@ -1,29 +1,19 @@
 pipeline {
     agent any
-
     stages {
-        stage('Checkout') {
+        stage('Clone') {
             steps {
-                git branch: 'master', url: 'https://github.com/SampadaSupriya/HelloWorld.git'
+                git 'https://github.com/SampadaSupriya/HelloWorld.git'
             }
         }
-
-        stage('Clean') {
+        stage('Docker Build') {
             steps {
-                sh 'rm -rf bin *.class'
+                sh 'docker build -t java-app:v1 .'
             }
         }
-
-        stage('Compile') {
+        stage('Docker Run') {
             steps {
-                sh 'mkdir -p bin'
-                sh 'javac -d bin HelloWorld.java'
-            }
-        }
-
-        stage('Execute') {
-            steps {
-                sh 'java -cp bin HelloWorld'
+                sh 'docker run --rm java-app:v1'
             }
         }
     }
