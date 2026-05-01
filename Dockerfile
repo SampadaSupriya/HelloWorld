@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM openjdk:17-jdk
 COPY HelloWorld.java /app/
 WORKDIR /app
 RUN javac HelloWorld.java
