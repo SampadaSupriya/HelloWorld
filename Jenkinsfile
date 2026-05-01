@@ -16,13 +16,18 @@ pipeline {
             steps {
                 script {
                     if (fileExists('Dockerfile')) {
-                        sh "docker build -t ${env.DOCKER_IMAGE} ."
+                        sh "docker build -t ${DOCKER_IMAGE} ."
                     } else {
                         error "Dockerfile not found"
                     }
                 }
             }
         }
+	stage('Docker Images') {
+	    script {
+	        sh "docker images"
+		}
+	}
 
         stage('Docker Login') {
             steps {
@@ -36,7 +41,7 @@ pipeline {
 
         stage('Docker Push') {
             steps {
-                sh "docker push ${env.DOCKER_IMAGE}"
+                sh "docker push ${DOCKER_IMAGE}"
             }
         }
     }
