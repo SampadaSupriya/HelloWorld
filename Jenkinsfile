@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'hello-world-java'
+        DOCKER_IMAGE = "sampadasupriya/hello-world-java:latest"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url:'https://github.com/SampadaSupriya/HelloWorld.git'
+                git branch: 'master', url: 'https://github.com/SampadaSupriya/HelloWorld.git'
             }
         }
 
@@ -18,24 +18,35 @@ pipeline {
                     if (fileExists('Dockerfile')) {
                         sh "docker build -t ${env.DOCKER_IMAGE} ."
                     } else {
-                        error "Docker file not found"
+                        error "Dockerfile not found"
                     }
                 }
             }
         }
-	stage('Docker Push') {
-		steps {
-		    sh 'docker push sampadasupriya/${env.DOCKER_IMAGE}'
-		}   
-	}
- }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'sampada', 
+                                                  usernameVariable: 'DOCKER_USER', 
+                                                  passwordVariable: 'DOCKER_PASS')]) {
+                    sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            steps {
+                sh "docker push ${env.DOCKER_IMAGE}"
+            }
+        }
+    }
 
     post {
         success {
-            echo 'Docker image build successfully.'
+            echo 'Docker image built and pushed successfully.'
         }
         failure {
-            echo 'Docker image build failed.'
+            echo 'Docker pipeline failed.'
         }
     }
 }
